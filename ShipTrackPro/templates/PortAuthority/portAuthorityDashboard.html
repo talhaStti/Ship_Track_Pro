@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="col-12">
+    <h2 class="">Current Orders:</h2>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Order Address</th>
+                        <th scope="col">Custom Status</th>
+                        <th scope="col">Vessel Information</th>
+                        <th scope="col">Container and Seal Number</th>
+
+                        <th scope="col">Dispatch</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {% for order in orders  %}
+                    <tr class="table-active align-items-lg-center ">
+                      <th class="" scope="row">{{forloop.counter}}</th>
+                      <td class="">
+                        {{order.address}}
+                      </td>
+                      <td>
+                        {% if order.customCleared%}
+                        
+                            <button class="btn btn-outline-primary btn-sm ">
+                                    Custom Cleared
+                                </button>
+                            
+                     
+                        {% else %}
+                        <button class="btn btn-outline-primary btn-sm ">
+                            Custom Not Cleared
+                        </button>
+                    
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if order.vesselInformation %}
+                        <a download href="{{order.vesselInformation.url}}">
+                          <button class="btn btn-outline-primary     btn-sm">
+
+                            Vessel Information
+                          </button>
+                      </a>
+                        {% else %}
+                          Vessel Information Not added
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if order.sealContainerNumber %}
+                        <a download href="{{order.sealContainerNumber.url}}">
+                          <button class="btn btn-outline-primary     btn-sm">
+
+                              Seal Container Number
+                          </button>
+                      </a>
+                        {% else %}
+                          Seal Container Number Not added
+                        {% endif %}
+                      </td>
+                      <td>
+                        <a href="{% url 'dispatchTanker' order.id %}">
+                            <button class=" btn btn-outline-primary btn-sm">
+                                Dispatch Order
+                            </button>
+                        </a>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                     
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

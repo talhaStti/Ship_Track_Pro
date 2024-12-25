@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="col-12">
+    <h2 class="">Current Orders:</h2>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Order id</th>
+                        <th scope="col">Diagram</th>
+                        <th scope="col">Excel Sheet</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Shipping Cost</th>
+                        <th scope="col">Shipping Manifest</th>                        
+                        <th scope="col">Pick Order</th>
+                        <th scope="col">Drop at Port </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {% for order in orders  %}
+                    <tr class="table-active align-items-lg-center ">
+                      <th class="" scope="row">{{forloop.counter}}</th>
+                      <td class="">{{order.id}}</td>
+                      <td class="">
+
+                        <a download href="{{order.diagram.url}}">
+
+                            Download Diagram
+                        </a>
+                    
+                    
+                    </td>
+                      <td class="">
+                        
+                        
+
+                            <a download href="{% url 'downloadExcelSheet' order.id %}">
+                                <button class="btn btn-outline-primary btn-sm">
+                                    
+                                    Current Excel Sheet
+                                </button>
+                            </a>
+                        
+            
+                            
+                        
+                      </td>
+                      <td>
+                        {{order.product.price}}
+                      </td>
+                      <td>
+                        {% if order.shippingCostVerified %}
+                          Shipping Cost Recieved and Verified
+                        {% elif order.shippingCost == -1 %}
+                          <form action="{% url 'requestShippingCost' order.id %}" method="post">
+                              {% csrf_token %}
+                              <div class="form-group">
+                                  <input name="shippingCost" class="form-control " style="width: 50%; display:inline" size="20%" type="number" id="tax"  required>
+                              </div>
+                              <div class="form-group mt-3">
+
+                                  <button type="submit" class="btn btn-outline-primary btn-sm  ">Add Shipping Cost</button>
+                                </div>
+                          </form>
+                          
+                        {% else %}
+                          {% if order.shippingCostSent %}
+                            Payment Recieved!
+                            <div>
+                              <a href="{% url 'verifyShippingPayment' order.id %}">
+                                <button class="btn btn-outline-primary btn-sm">
+                                  Confirm
+                                </button>
+                              </a>
+                            </div>
+                          {% else %}
+                            Awaiting Payment 
+                          {% endif %}
+                        {% endif %}
+                        
+                      </td>
+                      <td>
+                        {% if order.shippingManifest %}
+                                
+
+                        <a download href="{{order.shippingManifest.url}}">
+                          <button class="btn btn-outline-primary btn-sm ">
+                              Shipping Manifest
+                          </button>
+                      </a>
+                                
+                                {% else %}
+
+                                    <form action="{% url 'addShippingManifest' order.id %}" enctype="multipart/form-data"
+                                    method="post">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <input name="shippingManifest" class="form-control "
+                                            style="width: 50%; display:inline"  type="file"
+                                            id="shippingManifest"  type=" file" accept="" required>
+                                    </div>
+                                    <div class="form-group mt-3">
+
+                                        <button type="submit" class="btn btn-outline-primary btn-sm  ">Submit</button>
+                                    
+                                    </div>
+
+                                </form>
+                                
+                                    {% endif %}
+                      </td>
+                      <td>
+                        {% if order.tankerPicked %}
+                            Tanker Picked
+                        {% else %}
+                        <a href="{% url 'pickTanker' order.id %}">
+                            <button class="btn btn-outline-primary btn-sm  ">Pick Tanker</button>
+                        </a>
+                            
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% if order.tankerPicked %}
+                            
+                        <a href="{% url 'dropTanker' order.id %}">
+                            <button class="btn btn-outline-primary btn-sm  ">Drop at Port</button>
+                        </a>
+                        {% else %}
+                            Not Picked
+                        {% endif %}
+                        
+                      </td>
+                    </tr>
+                    {% endfor %}
+                     
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

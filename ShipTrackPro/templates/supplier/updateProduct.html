@@ -1,0 +1,46 @@
+{% extends 'supplier/supplierBase.html' %}
+{% block content %}
+    <div class="col-12">
+        <h2 class="">
+            Update Product:
+        </h2>
+    </div>
+    <div class="col-12 d-flex justify-content-center ">
+        <div class="col-6">
+        <form method="post" enctype="multipart/form-data" action="{% url 'updateProduct' product.id %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="productName" class="form-label mt-4">Product Name</label>
+                <input type="text" class="form-control" id="productName" name="productName" required placeholder="Enter Product Name" value="{{product.name}}">
+              </div>
+              <div class="form-group">
+                <label for="productPrice" class="form-label mt-4">Price</label>
+                <input type="number" step=".01" class="form-control" id="productPrice" value = "{{product.price}}" name="productPrice" required placeholder="Enter Price" autocomplete="off">
+              </div>
+
+              <div class="form-group">
+                <label for="productDescription" class="form-label mt-4">Product Description</label>
+                <textarea class="form-control" id="productDescription" name="productDescription" required rows="3">{{product.description}}
+                </textarea>
+              </div>
+              <div class="form-group mt-3">
+                <div class="d-flex justify-content-around ">
+                    <div>
+
+                        <label for="productImage" class="form-label mt-4">Image</label>
+                        <input name="productImage" class="form-control" type="file" id="productImage  type="file" accept="image/*" >
+                    </div>
+                    <div class="">
+                        <img src="{{product.image.url}}" class="img-fluid " alt="">
+                        <p class="text-center "> Current Image</p>
+                    </div>
+                </div>
+              </div>
+            <div class="form-group">
+                  
+                  <button type="submit" class="btn  btn-outline-primary  mt-4">Update</button>
+                </div>
+          </form>
+    </div>
+</div>
+{% endblock content %}

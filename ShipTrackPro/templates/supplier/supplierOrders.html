@@ -1,0 +1,223 @@
+{% extends 'supplier/supplierBase.html' %}
+{% block content %}
+
+<div class="col-12">
+    <h2 class="">Current Orders:</h2>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Order Status</th>
+                            <th scope="col">Customer</th>
+                            <th scope="col">Oil filling</th>
+                            <th scope="col">Custom Status</th>
+                            <th scope="col">Custom Documentation</th>
+                            <th scope="col">Export Declaration</th>
+                            <th scope="col">Shipping Company</th>
+                            <th scope="col">Bills of Lading</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr class="table-active align-items-lg-center ">
+                            <th class="" scope="row">{{forloop.counter}}</th>
+                            <td class="">{{order.status}}</td>
+                            <td class="">{{order.customer.user.username}}</td>
+                            <td class="">
+                                {% if order.oilFilled %}
+                                Oil Filled
+                                {% elif order.oilReqSent%}
+                                <a  href="{% url 'excelSheet' order.id %}">
+                                    <button class="btn btn-outline-primary btn-sm">
+
+                                        Oil is being Filled
+                                    </button>
+                                </a>
+                                {% else %}
+
+
+                                <form action="{% url 'sendOilReq' order.id %}" enctype="multipart/form-data"
+                                method="post">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <input name="orderDiagram" class="form-control "
+                                        style="width: 50%; display:inline" size="20%" type="file"
+                                        id="orderDiagram  type=" file" accept="" required>
+                                </div>
+                                <div class="form-group mt-3">
+
+                                    <button type="submit" class="btn btn-outline-primary btn-sm  ">Upload Diagram</button>
+                                
+                                </div>
+
+                            </form>
+
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if order.customCleared %}
+                                Customs Cleared
+                                {% elif order.customReqSent and order.customTax > -1 and not order.customTaxSent %}
+                                <p class="text-center ">
+
+                                    Custom Tax: {{order.customTax}}
+                                </p>
+                                <div class="text-center ">
+                                    <a href="{% url 'payCustomTax' order.id %}">
+
+                                        <button class="btn btn-outline-primary btn-sm ">
+                                            Click to pay
+                                        </button>
+                                    </a>
+                                </div>
+                                {% elif order.customTaxSent and not order.customCleared %}
+                                Tax Paid Waiting Conformation
+
+                                {% elif order.customReqSent %}
+                                Under Customs Review
+                                {% else %}
+                                <a href="{% url 'sendForCustomReview' order.id %}" class="">
+                                    <button class="btn btn-outline-primary btn-sm ">
+                                        Send Custom Request
+                                    </button>
+
+
+                                    {% endif %}
+                            </td>
+                            <td>
+                                    
+                                
+                                
+                                {% if order.customDocumentation %}
+                                    
+                                    <a download href="{{order.customDocumentation.url}}">
+                                        <button class="btn btn-outline-primary btn-sm">
+                                            Custom Documentation
+                                        </button>
+                                    </a>
+                                {% else %}
+                                    <form action="{% url 'addCustomDocumentation' order.id %}" enctype="multipart/form-data"
+                                    method="post">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <input name="customDocumentation" class="form-control "
+                                            style="width: 50%; display:inline" size="20%" type="file"
+                                            type=" file" accept="" required>
+                                    </div>
+                                    <div class="form-group mt-3">
+
+                                        <button type="submit" class="btn btn-outline-primary btn-sm  ">Submit</button>
+                                    
+                                    </div>
+
+                                </form>
+                                
+                                    {% endif %}
+
+                            </td>
+                            <td>
+                                {% if order.exportDeclaration %}
+                                
+
+                                    <a download href="{{order.exportDeclaration.url}}">
+                                        <button class="btn btn-outline-primary btn-sm">
+                                            
+                                            Export Declaration
+                                        </button>
+                                    </a>
+                                
+                                {% else %}
+
+                                    <form action="{% url 'addExportDeclaration' order.id %}" enctype="multipart/form-data"
+                                    method="post">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <input name="exportDeclaration" class="form-control "
+                                            style="width: 50%; display:inline" size="20%" type="file"
+                                            id="exportDeclaration"  type=" file" accept="" required>
+                                    </div>
+                                    <div class="form-group mt-3">
+
+                                        <button type="submit" class="btn btn-outline-primary btn-sm  ">Submit</button>
+                                    
+                                    </div>
+
+                                </form>
+                                
+                                    {% endif %}
+                            </td>
+                            <td>
+
+                                {% if order.shippingCostVerified %}
+                                <div class="text-center ">
+
+                                    {% if order.tankerDropedAtPort %}
+                                    Tanker Dropped at Port
+                                    {% elif order.tankerPicked%}
+                                    Tanker Picked
+                                    {% else %}
+                                    Payment Sent And Verified Waiting for shipping Company
+                                    {% endif %}
+                                </div>
+                                <div class="text-center mt-3">
+                                    <a download href="{{order.shippingManifest.url}}">
+                                        <button class="btn btn-outline-primary btn-sm ">
+                                            Shipping Manifest
+                                        </button>
+                                    </a>
+                                </div>
+
+                                {% elif order.oilFilled and not order.shipReqSent %}
+                                <a href="{% url 'sendShipReq' order.id %}" class="">
+                                    <button class="btn btn-outline-primary btn-sm ">
+                                        Request Shipping Company
+                                    </button>
+                                </a>
+                                {% elif order.shipReqSent and order.shippingCost == -1 %}
+                                <button class="btn btn-outline-primary btn-sm ">
+                                    Awaiting Response
+                                </button>
+                                {% elif order.shippingCost > -1 and not order.shippingCostSent %}
+                                <p>
+                                    Shipping Cost = {{order.shippingCost}}
+                                </p>
+                                <a href="{% url 'payShippingCost' order.id %}">
+
+                                    <button class="btn btn-outline-primary btn-sm">
+                                        Pay
+                                    </button>
+                                </a>
+                                {% elif order.shippingCostSent %}
+                                Shipping Cost Sent Waiting for Verification
+
+                                {% elif not order.oilFilled%}
+
+                                Waiting For Oil to fill
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if order.billsOfLading  %}
+                                <a download href="{{order.billsOfLading.url}}">
+
+                                    <button class="btn btn-outline-primary btn-sm">
+                                        Download Bills of Lading
+                                    </button>
+                                </a>
+                                {% else %}
+                                Bills of Ladings Not Uploaded
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

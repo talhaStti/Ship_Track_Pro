@@ -1,0 +1,58 @@
+{% extends 'supplier/supplierBase.html' %}
+{% block content %}
+
+
+
+<div class="col-12">
+    <h1 class="text-center">Welcome {{request.user.username}}</h1>
+  </div>
+  <div class="row mt-5 ">
+    <div class="col-md-4 market-update-gd">
+      <div class="market-update-block clr-block-1">
+        <div class="col-md-8 market-update-left">
+          <h3>{{wallet}}</h3>
+          <h4>Wallet</h4>
+
+        </div>
+        <div class="col-md-4 market-update-right">
+            <i class=" 	fa fa-bank"></i>
+                        </div>
+        <div class="clearfix"> </div>
+      </div>
+    </div>
+    <div class="col-md-4 market-update-gd">
+      <div class="market-update-block clr-block-2">
+        <div class="col-md-8 market-update-left">
+          <h3>{{totalProducts}}</h3>
+          <h4>Total Products</h4>
+
+        </div>
+        <div class="col-md-4 market-update-right">
+          <i class="fa fa-shopping-cart"></i>
+        </div>
+        <div class="clearfix"> </div>
+      </div>
+    </div>
+    <div class="col-md-4 market-update-gd">
+      <div class="market-update-block clr-block-3">
+        <div class="col-md-8 market-update-left">
+          <h3>{{ordersPending}}</h3>
+          <h4>Orders Pending</h4>
+
+        </div>
+        <div class="col-md-4 market-update-right">
+          <i class="fa fa-bar-chart"> </i>
+        </div>
+        <div class="clearfix"> </div>
+      </div>
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+{% endblock content %}

@@ -1,0 +1,47 @@
+{% extends 'customer/customerBase.html' %}
+{% block content %}
+<div class="col-12">
+    <h2 class="">Cart:</h2>
+    <div class="container">
+        <div class="row">
+            {% for product in products  %}   
+            <div class="col-3 my-3 d-flex justify-content-center   ">
+                <div class="card" style="width: 12rem;">
+                    <div style="height: 100px;">
+                        <img src="{{product.image.url}}"  class="card-img-top img-fluid h-100 "  alt="">
+                    </div>
+                    <div class="card-body">
+                      <h5 class="card-title">{{product.name}}</h5>
+                      <span class="badge rounded-pill bg-primary">Rs: {{product.price}}</span>
+                    </div>
+
+                    <div class="card-body">
+                        <a href="{% url 'removeFromCart' product.id %}" >
+                        <button class="btn btn-outline-danger btn-sm ">
+                             Remove from Cart
+                            </button>
+                        </a>    
+                    </div>
+                </div>
+                
+            </div>
+            {% endfor %}
+        </div>
+        <div class="row d-flex align-items-lg-center ">
+            <div class="col-6 mt-5">
+                <h3 class="">
+                    Your Total: Rs: {{total}}
+                </h3>
+            </div>
+            <div class="col-6 mt-5">
+                <a href="{% url 'checkout' %}" >
+                    <button class="btn btn-outline-success  ">
+                         Proceed to Checkout
+                        </button>
+                    </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

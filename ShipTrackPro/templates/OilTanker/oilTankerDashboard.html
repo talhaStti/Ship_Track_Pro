@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="col-12">
+    <h2 class="">Current Orders:</h2>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Order id</th>
+                        <th scope="col">Diagram</th>
+                        <th scope="col">Current Excel Sheet</th>
+                        <th scope="col">Update Excel Sheet</th>
+                        <th scope="col">Bill of Lading</th>
+                        <th scope="col">Vessel information</th>
+                        <th scope="col">Seal and Container Numbers</th>
+
+                        <th scope="col">Complete </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {% for order in orders  %}
+                    <tr class="table-active align-items-lg-center ">
+                      <th class="" scope="row">{{forloop.counter}}</th>
+                      <td class="">{{order.id}}</td>
+                      <td class="">
+
+                        <a download href="{{order.diagram.url}}">
+
+                          <button class="btn btn-outline-primary     btn-sm">  
+                            Download Diagram
+                          </button>
+                        </a>
+                    
+                    
+                    </td>
+                      <td class="">
+                        
+                        
+<div>
+
+  <a href="{% url 'downloadExcelSheet' order.id %}">
+    
+    <button class="btn btn-outline-primary     btn-sm">
+      Download Excel Sheet
+    </button>
+  </a>
+</div>
+                        
+            
+                            
+                        
+                      </td>
+                      <td>
+                        <a href = "{% url 'excelSheet' order.id %}" >
+                            
+                            <div class="form-group mt-3">
+                                <button type="submit" class="btn   btn-outline-primary  ">View Excel Sheet</button>
+                              </div>
+
+                        </form>
+
+                      </td>
+                      <td>   
+                        {% if order.billsOfLading %}
+                        <a download href="{{order.billsOfLading.url}}">
+                          <button class="btn btn-outline-primary     btn-sm">
+
+                              Bill Of lading
+                          </button>
+                      </a>
+                        {% else %}
+                        <form action="{% url 'addBillsOfLading' order.id %}" enctype="multipart/form-data" method="post">
+                          {% csrf_token %}
+                          <div class="form-group">
+                              <input name="billsOfLading" class="form-control "   style="width: 50%; display:inline"   type="file" accept=""  required>
+                          </div>
+                          <div class="form-group mt-3">
+                              <button type="submit" class="btn   btn-outline-primary  ">Submit</button>
+                            </div>
+
+                      </form>
+                        {% endif %}
+                      </td>
+                      <td>   
+                        {% if order.vesselInformation %}
+                        <a download href="{{order.vesselInformation.url}}">
+                          <button class="btn btn-outline-primary     btn-sm">
+
+                            vessel Information
+                          </button>
+                      </a>
+                        {% else %}
+                        <form action="{% url 'addVesselInformation' order.id %}" enctype="multipart/form-data" method="post">
+                          {% csrf_token %}
+                          <div class="form-group">
+                              <input name="vesselInformation" class="form-control "   style="width: 50%; display:inline"   type="file" accept=""  required>
+                          </div>
+                          <div class="form-group mt-3">
+                              <button type="submit" class="btn   btn-outline-primary  ">Submit</button>
+                            </div>
+
+                      </form>
+                        {% endif %}
+                      </td>
+                      <td>   
+                        {% if order.sealContainerNumber %}
+                        <a download href="{{order.sealContainerNumber.url}}">
+                          <button class="btn btn-outline-primary     btn-sm">
+
+                              Seal Container Number
+                          </button>
+                      </a>
+                        {% else %}
+                        <form action="{% url 'addSealContainerNumber' order.id %}" enctype="multipart/form-data" method="post">
+                          {% csrf_token %}
+                          <div class="form-group">
+                              <input name="sealContainerNumber" class="form-control "   style="width: 50%; display:inline"   type="file" accept=""  required>
+                          </div>
+                          <div class="form-group mt-3">
+                              <button type="submit" class="btn   btn-outline-primary  ">Submit</button>
+                            </div>
+
+                      </form>
+                        {% endif %}
+                      </td>
+
+                      <td>
+                        <a href="{% url 'completeFilling' order.id %}">
+                            <button class="btn   btn-outline-primary  ">Complete Order</button>
+                        </a>
+                        
+                      </td>
+                    </tr>
+                    {% endfor %}
+                     
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

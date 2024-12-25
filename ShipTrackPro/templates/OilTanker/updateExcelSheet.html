@@ -1,0 +1,80 @@
+
+  {% extends 'base.html' %}
+  
+
+{% block content %}
+
+<div class="col-12">
+    <h2 class="">Current Orders:</h2>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th scope="col">Order Id</th>
+                        <th scope="col">Volume m<sup>3</sup></th>
+                        <th scope="col">Total Weight (MT)</th>
+                        <th scope="col">Rate (MT/hour)</th>
+                        <th scope="col">Tank Pressure</th>
+                        <th scope="col">To Go (MT)</th>
+                        <th scope="col">Complete </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <form action="{% url 'excelSheet' excelSheet.order.id %}" method="post" >
+                        {% csrf_token %}
+                        <th>
+                          
+                            {{excelSheet.order.id}}
+                        </th>
+                          <td>
+                          <input type="number" name="volume" id="volume" class="form-control" required value="{{excelSheet.volume}}">
+                        </td>
+                        <td>
+                          <input type="number" name="weight" id="weight" class="form-control" required value="{{excelSheet.weight}}">
+                        </td>
+                        <td>
+                          <input type="number" name="rate" id="rate" class="form-control" required value="{{excelSheet.rate}}">
+                        </td>
+                        <td>
+                          <input type="number" name="tankPressure" id="tankPressure" class="form-control" required value="{{excelSheet.tankPressure}}">
+                        </td>
+                        <td>
+                          <input type="number" name="toGo" id="toGo" class="form-control" required value="{{excelSheet.toGoMt}}">
+                        </td>
+                        {% if oilTanker %}
+                        <td>
+                          <button type="submit" class="btn   btn-outline-primary  ">Submit</button>
+                        </td>
+                          
+                        {% else %}
+                        <td>
+                          <a href="{% url 'downloadExcelSheet' excelSheet.order.id %}">
+
+                            <button type="button" class="btn   btn-outline-primary  ">Download Excel Sheet</button>
+                          </a>
+                        </td>
+                          
+                        {% endif %}
+
+                      </form>
+                    </tr>
+                     
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </div>
+  </div>
+  {% if not oilTanker %}
+    
+  <script>
+    const inputs = document.querySelectorAll('input');
+    inputs.forEach(input => {
+      input.disabled = true;
+    })
+    </script>
+    {% endif %}
+{% endblock content %}

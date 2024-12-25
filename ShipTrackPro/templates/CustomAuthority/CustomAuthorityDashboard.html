@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+  td,
+  th {
+    vertical-align: middle;
+    border: 1px solid black;
+  }
+
+  tr {
+    border-bottom: 1px solid black;
+  }
+
+  th {
+    text-align: center;
+  }
+</style>
+<div class="col-12">
+  <h2 class="">Current Orders:</h2>
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Order id</th>
+              <th scope="col">Diagram</th>
+              <th scope="col">Shipping Manifest</th>
+              <th scope="col">Custom Documents</th>
+              <th scope="col">Export Declaration</th>
+              <th scope="col">Price</th>
+              <th scope="col">Tax </th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in orders %}
+            <tr class="table-active align-items-lg-center ">
+              <th class="" scope="row">{{forloop.counter}}</th>
+              <td class="">{{order.id}}</td>
+              <td class="">
+                {% if order.diagram %}
+                <a download href="{{order.diagram.url}}">
+                  <button class="btn btn-outline-primary btn-sm">
+
+                    Download Diagram
+                  </button>
+                </a>
+                  
+                {% else %}
+                  No Diagram Provided
+                {% endif %}
+
+
+              </td>
+              <td class="">
+                {% if order.shippingManifest %}
+                  
+                <a download href="{{order.shippingManifest.url}}">
+                  <button class="btn btn-outline-primary btn-sm">
+
+                    Shipping Manifest
+                  </button>
+                </a>
+                {% else %}
+                  Shipping Manifest Not Provided
+                {% endif %}
+
+              </td>
+              <td>
+                {% if order.customDocumentation %}
+                  
+                <a download href="{{order.customDocumentation.url}}">
+                  <button class="btn btn-outline-primary btn-sm">
+
+                    Custom Documentation
+                  </button>
+                </a>
+                {% else %}
+                  Custom Documentation Not Provided
+                {% endif %}
+              </td>
+              <td>
+                {% if order.exportDeclaration %}
+                  
+                <a download href="{{order.exportDeclaration.url}}">
+                  <button class="btn btn-outline-primary btn-sm">
+
+                    Export Declaration
+                  </button>
+                </a>
+                {% else %}
+                Export Declaration Not Provided
+                {% endif %}
+              </td>
+              <td>
+                {{order.product.price}}
+              </td>
+              <td>
+                {% if order.customTax == -1 %}
+                <form action="{% url 'addCustomTax' order.id %}" method="post">
+                  {% csrf_token %}
+                  <div class="form-group">
+                    <input name="tax" class="form-control " type="number"
+                      id="tax" required>
+                  </div>
+                  <div class="form-group mt-3">
+
+                    <button type="submit" class="btn btn-outline-primary btn-sm  ">Add Tax</button>
+                  </div>
+                  
+                </form>
+
+                {% else %}
+                {% if order.customTaxSent %}
+                Tax Recieved!
+                <div>
+                  <a href="{% url 'verifyTaxPayment' order.id%}">
+                    <button class="btn btn-outline-primary btn-sm">
+                      Confirm
+                    </button>
+                  </a>
+                </div>
+                {% else %}
+                Awaiting Tax
+                {% endif %}
+                {% endif %}
+
+              </td>
+            </tr>
+            {% endfor %}
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

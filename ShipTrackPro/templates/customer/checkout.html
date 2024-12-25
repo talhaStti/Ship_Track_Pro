@@ -1,0 +1,37 @@
+{% extends 'customer/customerBase.html' %}
+{% block content %}
+<div class="col-12">
+    <h2 class="">Checkout:</h2>
+</div>
+<div class="col-12 d-flex justify-content-center ">
+    <div class="col-6">
+    <form method="post" enctype="multipart/form-data" action="{% url 'checkout' %}">
+        {% csrf_token %}
+        <div>
+            <h3>
+              
+                Your total is Rs: {{total}}
+            </h3>
+        </div>
+        <div class="form-group">
+            <label for="address" class="form-label mt-4">Address</label>
+            <input type="text" class="form-control" id="address" name="address" required placeholder="Enter your home address">
+          </div>
+          <div class="form-group">
+            <label for="creditCardNumber" class="form-label mt-4">Credit Card number</label>
+            <input type="text"  class="form-control" id="creditCardNumber" name="creditCardNumber" required placeholder="Enter Credit Card Number" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label for="pin" class="form-label mt-4">PIN</label>
+            <input type="text"  class="form-control" id="pin" name="pin" required placeholder="Enter Credit Card Pin" autocomplete="off">
+          </div>
+
+
+          <div class="form-group">
+              
+              <button type="submit" class="btn btn-outline-primary  mt-4">Place Order</button>
+            </div>
+      </form>
+</div>
+</div>
+{% endblock content %}
